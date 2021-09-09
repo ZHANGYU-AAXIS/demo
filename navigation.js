@@ -27,7 +27,7 @@ function RootNavigator() {
       <Stack.Screen name="Credit Cards" component={List} />
       <Stack.Screen name="Add Credit Card" component={CheckoutScreen} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="AddCard" component={CheckoutAddCardScreen} />
+        <Stack.Screen name="Add Card" component={CheckoutAddCardScreen} />
       </Stack.Group>
     </Stack.Navigator>
   );

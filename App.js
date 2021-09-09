@@ -5,15 +5,18 @@ import { NativeBaseProvider } from "native-base";
 
 import Navigation from "./navigation";
 
-import { Context, ListContext } from "./Context";
+import { AddressContext, Context, ListContext } from "./Context";
 
 const Provider = (props) => {
   const [state, setState] = useState({});
   const [list, setList] = useState([]);
+  const [address, setAddress] = useState([]);
   return (
     <Context.Provider value={{ state, setState }}>
       <ListContext.Provider value={{ list, setList }}>
-        {props.children}
+        <AddressContext.Provider value={{ address, setAddress }}>
+          {props.children}
+        </AddressContext.Provider>
       </ListContext.Provider>
     </Context.Provider>
   );

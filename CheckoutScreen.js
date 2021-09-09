@@ -1,19 +1,22 @@
 import * as React from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { VStack, Button, Text, Alert, Input } from "native-base";
-import axios from "axios";
-import { useContext, useEffect, useRef } from "react";
-import { Context, ListContext } from "./Context";
+import { useContext, useEffect, useRef, useState } from "react";
+import { AddressContext, Context, ListContext } from "./Context";
+import { addNew } from "./List";
 
-export default function CheckoutScreen({ navigation, route }) {
+export default function CheckoutScreen({ navigation }) {
   const handleAddCard = () => {
-    navigation.navigate("AddCard");
+    navigation.navigate("Add Card");
   };
 
-  const { state, setState } = useContext(Context);
+  const { state } = useContext(Context);
 
   const { list } = useContext(ListContext);
+
+  const { setAddress } = useContext(AddressContext);
+
+  const [form, setForm] = useState({});
 
   const prevList = useRef(list);
 
@@ -21,67 +24,53 @@ export default function CheckoutScreen({ navigation, route }) {
     prevList.current = list;
   }, [list]);
 
-  useEffect(() => {
-    axios
-      .post("https://cert-xiecomm.paymetric.com/DIeComm/AccessToken", {
-        MerchantGuid: "a94c7413-d1f1-45e3-9427-00408707bf69",
-        SessionRequestType: 1,
-        Signature: "LVnPPR9oaSx/kSeGq5VzswQ/JnFvMrAvl/n2bW4STdQ=",
-        MerchantDevelopmentEnvironment: "javascrpit",
-        Packet: `<?xml version="1.0" encoding="utf-8"?><merchantHtmlPacketModel xmlns="Paymetric:XiIntercept:MerchantHtmlPacketModel"><iFramePacket><hostUri>http://localhost:8080/store</hostUri><cssUri>http://localhost:5000/iframe.css</cssUri></iFramePacket><templateHtml name="creditcard"><paymentTypes><paymentType type="american express" /><paymentType type="mastercard" /><paymentType type="visa" /></paymentTypes></templateHtml></merchantHtmlPacketModel>`,
-      })
-      .then((result) => {
-        const [, MerchantGuid] = result.data.match(
-          /<MerchantGuid>(.*)<\/MerchantGuid>/
-        );
-        const [, AccessToken] = result.data.match(
-          /<AccessToken>(.*)<\/AccessToken>/
-        );
-        const [, Signature] = result.data.match(/<Signature>(.*)<\/Signature>/);
-
-        setState({ MerchantGuid, AccessToken, Signature });
-      });
-    return () => {
-      setState({});
-    };
-  }, []);
-
   console.log(state.AccessToken);
-
-  const newItem =
-    prevList.current.length !== list.length ? list[list.length - 1] : null;
 
   return (
     <ScrollView>
       <VStack style={styles.container} space={2}>
         <Text style={[styles.title]}>Credit Card Details</Text>
-        {newItem ? (
+        {addNew.current ? (
           <Alert flex={1} status="success">
             <Alert.Icon />
             <Alert.Description>
-              <Text>Your Visa ending in has been added.</Text>
+              <Text>Your Visa card has been added.</Text>
             </Alert.Description>
           </Alert>
         ) : (
-          <Button
-            variant="ghost"
-            isDisabled={!state.AccessToken}
-            onPress={handleAddCard}
-          >
+          <Button variant="ghost" onPress={handleAddCard}>
             Add New Card
           </Button>
         )}
         <Text style={[styles.title]}>Billing Address</Text>
         <Text>Name</Text>
-        <Input />
+        <Input
+          value={form.name}
+          onChangeText={(text) => setForm((p) => ({ ...p, name: text }))}
+        />
         <Text>Company</Text>
-        <Input />
+        <Input
+          value={form.company}
+          onChangeText={(text) => setForm((p) => ({ ...p, company: text }))}
+        />
         <Text>Address</Text>
-        <Input />
+        <Input
+          value={form.address}
+          onChangeText={(text) => setForm((p) => ({ ...p, address: text }))}
+        />
         <Text>City</Text>
-        <Input />
+        <Input
+          value={form.city}
+          onChangeText={(text) => setForm((p) => ({ ...p, city: text }))}
+        />
       </VStack>
-      <Button m="16px" onPress={() => navigation.goBack()}>
+      <Button
+        m="16px"
+        onPress={() => {
+          setAddress((p) => [...p, form]);
+          navigation.goBack();
+        }}
+      >
         Save and Continue
       </Button>
     </ScrollView>

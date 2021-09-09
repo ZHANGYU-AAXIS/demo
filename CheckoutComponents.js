@@ -38,12 +38,12 @@ export const Address = () => {
 
 export const CreditCard = ({ name, last4, exp }) => {
   return (
-    <VStack bg="#E6F2FE" p="8px" mb='8px'>
+    <VStack bg="#E6F2FE" p="8px" mb="8px">
       <Text color="#1379C8" fontWeight="600">
         {name}
       </Text>
       <HStack justifyContent="space-between">
-        <Text color="#1379C8">xxx-xxx-xxxxx-{last4}</Text>
+        {last4 && <Text color="#1379C8">xxx-xxx-xxxxx-{last4}</Text>}
         <Text color="#1379C8">{exp}</Text>
       </HStack>
     </VStack>
