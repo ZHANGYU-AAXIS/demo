@@ -7,11 +7,13 @@ import {
   Text,
   Switch,
   HStack,
+  Radio,
 } from "native-base";
 import { AddressContext, Context, ListContext } from "./Context";
 import { useNavigation } from "@react-navigation/native";
 import { CreditCard } from "./CheckoutComponents";
 import axios from "axios";
+import { SafeAreaView } from "react-native";
 
 export const addNew = { current: false };
 
@@ -50,52 +52,56 @@ const List = () => {
 
   return (
     <VStack bg="white" flex={1}>
-      <HStack p="12px" justifyContent="flex-end" alignItems="center">
-        <Text mr="4px">Switch</Text>
-        <Switch isChecked={toggle} onToggle={() => setToggle((p) => !p)} />
-      </HStack>
-      <ScrollView flex={1}>
-        {list.length !== 0 && (
-          <Text fontSize="lg" my={3} fontWeight="bold">
-            Credit Cards
-          </Text>
-        )}
-        {list.map((item) => (
-          <CreditCard
-            name={item["Card Holder Name"]}
-            last4={item["Card Number"].split("-")[2]}
-            exp={`${item["Expiration Month"]}/${item["Expiration Year"]}`}
-          />
-        ))}
-        {address.length !== 0 && (
-          <Text fontSize="lg" my={3} fontWeight="bold">
-            Addresses
-          </Text>
-        )}
-        {address.map((item) =>
-          !item.name ? null : (
+      <SafeAreaView style={{ flex: 1 }}>
+        <HStack p="12px" justifyContent="flex-end" alignItems="center">
+          <Radio.Group onChange={setToggle} defaultValue={false}>
+            <Radio value={true}>Workflow 1</Radio>
+            <Radio value={false}>Workflow 2</Radio>
+          </Radio.Group>
+        </HStack>
+        <ScrollView flex={1}>
+          {list.length !== 0 && (
+            <Text fontSize="lg" my={3} fontWeight="bold">
+              Credit Cards
+            </Text>
+          )}
+          {list.map((item) => (
             <CreditCard
-              name={`${item.name} (${item.company})`}
-              exp={item.address}
+              name={item["Card Holder Name"]}
+              last4={item["Card Number"].split("-")[2]}
+              exp={`${item["Expiration Month"]}/${item["Expiration Year"]}`}
             />
-          )
-        )}
-      </ScrollView>
-      <Button
-        isDisabled={!state.AccessToken}
-        variant="ghost"
-        onPress={() => {
-          addNew.current = false;
+          ))}
+          {address.length !== 0 && (
+            <Text fontSize="lg" my={3} fontWeight="bold">
+              Addresses
+            </Text>
+          )}
+          {address.map((item) =>
+            !item.name ? null : (
+              <CreditCard
+                name={`${item.name} (${item.company})`}
+                exp={item.address}
+              />
+            )
+          )}
+        </ScrollView>
+        <Button
+          isDisabled={!state.AccessToken}
+          variant="ghost"
+          onPress={() => {
+            addNew.current = false;
 
-          if (toggle) {
-            navigate("Add Card", { page: true });
-          } else {
-            navigate("Add Credit Card");
-          }
-        }}
-      >
-        Add New Payment
-      </Button>
+            if (toggle) {
+              navigate("Add Card", { page: true });
+            } else {
+              navigate("Add Credit Card");
+            }
+          }}
+        >
+          Add New Payment
+        </Button>
+      </SafeAreaView>
     </VStack>
   );
 };
