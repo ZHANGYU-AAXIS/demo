@@ -2,6 +2,7 @@
   "expo": {
     "name": "CreditCard Demo",
     "slug": "CreditCard",
+    "owner": "ferguson-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
