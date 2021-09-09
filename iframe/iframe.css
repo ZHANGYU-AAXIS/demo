@@ -18,6 +18,7 @@
   border-radius: 3px;
   outline: none;
   border: 1px solid #e3e3e3;
+  -webkit-appearance: none;
 }
 
 .xi-short-text {
