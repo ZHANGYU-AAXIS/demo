@@ -25,9 +25,17 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Credit Cards" component={List} />
-      <Stack.Screen name="Add Credit Card" component={CheckoutScreen} />
+      <Stack.Screen
+        name="Add Credit Card"
+        component={CheckoutScreen}
+        options={{ title: "Add Credit Card(Native)" }}
+      />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Add Card" component={CheckoutAddCardScreen} />
+        <Stack.Screen
+          name="Add Card"
+          component={CheckoutAddCardScreen}
+          options={{ title: "Add Card(Webview)" }}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );

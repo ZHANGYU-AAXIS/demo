@@ -55,7 +55,9 @@ const List = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <HStack p="12px" justifyContent="flex-end" alignItems="center">
           <Radio.Group onChange={setToggle} defaultValue={false}>
-            <Radio value={true}>Workflow 1</Radio>
+            <Radio value={true} mb="8px">
+              Workflow 1
+            </Radio>
             <Radio value={false}>Workflow 2</Radio>
           </Radio.Group>
         </HStack>
