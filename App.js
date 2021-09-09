@@ -5,16 +5,27 @@ import { NativeBaseProvider } from "native-base";
 
 import Navigation from "./navigation";
 
-export const Context = React.createContext(null);
+import { Context, ListContext } from "./Context";
+
+const Provider = (props) => {
+  const [state, setState] = useState({});
+  const [list, setList] = useState([]);
+  return (
+    <Context.Provider value={{ state, setState }}>
+      <ListContext.Provider value={{ list, setList }}>
+        {props.children}
+      </ListContext.Provider>
+    </Context.Provider>
+  );
+};
 
 export default function App() {
-  const [state, setState] = useState({});
   return (
     <SafeAreaProvider>
       <NativeBaseProvider>
-        <Context.Provider value={{ state, setState }}>
+        <Provider>
           <Navigation />
-        </Context.Provider>
+        </Provider>
       </NativeBaseProvider>
       <StatusBar />
     </SafeAreaProvider>

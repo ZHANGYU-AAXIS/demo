@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 import CheckoutScreen from "./CheckoutScreen";
 import CheckoutAddCardScreen from "./CheckoutAddCardScreen";
+import List from "./List";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -23,11 +24,8 @@ const Stack = createNativeStackNavigator();
 function RootNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Root"
-        component={CheckoutScreen}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="Credit Cards" component={List} />
+      <Stack.Screen name="Add Credit Card" component={CheckoutScreen} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="AddCard" component={CheckoutAddCardScreen} />
       </Stack.Group>

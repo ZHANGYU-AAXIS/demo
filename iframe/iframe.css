@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+}
+#div {
+  margin-bottom: 16px;
+}
+
+#div > label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.xi-long-text,
+.xi-short-text {
+  height: 40px;
+  width: 220px;
+  border-radius: 3px;
+  outline: none;
+  border: 1px solid #e3e3e3;
+}
+
+.xi-short-text {
+  width: 80px;
+}
+#c-exmth {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#c-exyr {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.xi-long-text:focus,
+.xi-short-text:focus {
+  border-color: #1c88c7;
+}
+
+.xi-error + div {
+  font-size: 14px;
+  color: #ed3b38;
+}

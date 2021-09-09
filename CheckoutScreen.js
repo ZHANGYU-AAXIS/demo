@@ -1,10 +1,10 @@
 import * as React from "react";
-import { StyleSheet, ScrollView, Alert } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { VStack, Button, Text, Input } from "native-base";
+import { VStack, Button, Text, Alert, Input } from "native-base";
 import axios from "axios";
-import { useContext, useEffect } from "react";
-import { Context } from "./App";
+import { useContext, useEffect, useRef } from "react";
+import { Context, ListContext } from "./Context";
 
 export default function CheckoutScreen({ navigation, route }) {
   const handleAddCard = () => {
@@ -13,45 +13,78 @@ export default function CheckoutScreen({ navigation, route }) {
 
   const { state, setState } = useContext(Context);
 
+  const { list } = useContext(ListContext);
+
+  const prevList = useRef(list);
+
+  useEffect(() => {
+    prevList.current = list;
+  }, [list]);
+
   useEffect(() => {
     axios
       .post("https://cert-xiecomm.paymetric.com/DIeComm/AccessToken", {
         MerchantGuid: "a94c7413-d1f1-45e3-9427-00408707bf69",
         SessionRequestType: 1,
-        Signature: "0m6KhkLLNElTB7jjFXDemGnwqm1tsTa1QMHXjh/G41A=",
+        Signature: "LVnPPR9oaSx/kSeGq5VzswQ/JnFvMrAvl/n2bW4STdQ=",
         MerchantDevelopmentEnvironment: "javascrpit",
-        Packet: `<?xml version="1.0" encoding="utf-8"?><merchantHtmlPacketModel xmlns="Paymetric:XiIntercept:MerchantHtmlPacketModel"><iFramePacket><hostUri>http://localhost:8080/store</hostUri><cssUri>https://www.ferguson.com/css</cssUri></iFramePacket><templateHtml name="creditcard"><paymentTypes><paymentType type="american express" /><paymentType type="mastercard" /><paymentType type="visa" /></paymentTypes></templateHtml></merchantHtmlPacketModel>`,
+        Packet: `<?xml version="1.0" encoding="utf-8"?><merchantHtmlPacketModel xmlns="Paymetric:XiIntercept:MerchantHtmlPacketModel"><iFramePacket><hostUri>http://localhost:8080/store</hostUri><cssUri>http://localhost:5000/iframe.css</cssUri></iFramePacket><templateHtml name="creditcard"><paymentTypes><paymentType type="american express" /><paymentType type="mastercard" /><paymentType type="visa" /></paymentTypes></templateHtml></merchantHtmlPacketModel>`,
       })
       .then((result) => {
-        const [, merchantGuid] = result.data.match(
+        const [, MerchantGuid] = result.data.match(
           /<MerchantGuid>(.*)<\/MerchantGuid>/
         );
-        const [, accessToken] = result.data.match(
+        const [, AccessToken] = result.data.match(
           /<AccessToken>(.*)<\/AccessToken>/
         );
-        const [, signature] = result.data.match(/<Signature>(.*)<\/Signature>/);
+        const [, Signature] = result.data.match(/<Signature>(.*)<\/Signature>/);
 
-        setState((p) => ({ ...p, merchantGuid, accessToken, signature }));
+        setState({ MerchantGuid, AccessToken, Signature });
       });
+    return () => {
+      setState({});
+    };
   }, []);
 
-  console.table(state);
+  console.log(state.AccessToken);
+
+  const newItem =
+    prevList.current.length !== list.length ? list[list.length - 1] : null;
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <VStack style={styles.container} space={2}>
-          <Text style={[styles.title]}>Select Card for Payment</Text>
-          <Button variant="ghost" onPress={handleAddCard}>
+    <ScrollView>
+      <VStack style={styles.container} space={2}>
+        <Text style={[styles.title]}>Credit Card Details</Text>
+        {newItem ? (
+          <Alert flex={1} status="success">
+            <Alert.Icon />
+            <Alert.Description>
+              <Text>Your Visa ending in has been added.</Text>
+            </Alert.Description>
+          </Alert>
+        ) : (
+          <Button
+            variant="ghost"
+            isDisabled={!state.AccessToken}
+            onPress={handleAddCard}
+          >
             Add New Card
           </Button>
-          <Text>Billing</Text>
-          <Input />
-          <Input />
-          <Input />
-        </VStack>
-      </ScrollView>
-    </SafeAreaView>
+        )}
+        <Text style={[styles.title]}>Billing Address</Text>
+        <Text>Name</Text>
+        <Input />
+        <Text>Company</Text>
+        <Input />
+        <Text>Address</Text>
+        <Input />
+        <Text>City</Text>
+        <Input />
+      </VStack>
+      <Button m="16px" onPress={() => navigation.goBack()}>
+        Save and Continue
+      </Button>
+    </ScrollView>
   );
 }
 

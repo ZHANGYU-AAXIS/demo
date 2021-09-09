@@ -1,67 +1,52 @@
 import * as React from "react";
 import { WebView } from "react-native-webview";
-import { useContext, useLayoutEffect } from "react";
-import { Context } from "./App";
+import { Alert, Text, Toast } from "native-base";
+import { useContext } from "react";
+import { Context, ListContext } from "./Context";
+import axios from "axios";
+const parseString = require("react-native-xml2js").parseString;
 
 const CheckoutAddCardScreen = ({ navigation }) => {
   const { state } = useContext(Context);
+  const { setList } = useContext(ListContext);
 
-  const { accessToken } = state;
-
-  console.table({ accessToken });
+  const { AccessToken } = state;
 
   return (
     <WebView
       onMessage={(event) => {
-        const { data } = event.nativeEvent;
-        console.log(data);
+        const { data } = JSON.parse(event.nativeEvent.data);
+        if (data.HasPassed) {
+          axios
+            .get("https://cert-xiecomm.paymetric.com/DIeComm/ResponsePacket", {
+              params: state,
+            })
+            .then((result) => {
+              parseString(result.data, (err, result) => {
+                const {
+                  PaymetricResponse: {
+                    Fields: [{ FormField }],
+                  },
+                } = result;
+                const values = {};
+                FormField.forEach((item) => {
+                  const {
+                    Name: [name],
+                    Value: [value],
+                  } = item;
+                  values[name] = value;
+                });
+                setList((p) => [...p, values]);
+
+                navigation.goBack();
+              });
+            });
+        }
       }}
       style={{ flex: 1 }}
       originWhitelist={["*"]}
       source={{
-        html: `
-<!DOCTYPE html>
-<html>
-
-<style> 
-body{
-margin: 0;
-}
-iframe{
-border: none;
-}
-</style>
-<body>
-<script src="https://xiecomm.paymetric.com/DIeComm/Scripts/XIFrame/XIFrame-1.2.0.js"></script>
-
-<script>
-    function submitForm() {
-        window.ReactNativeWebView.postMessage("submit")
-        try{
-            $XIFrame.submit({
-            iFrameId: 'dieCommFrame',
-            targetUrl:'https://cert-xiecomm.paymetric.com/diecomm/View/Iframe/a94c7413-d1f1-45e3-9427-00408707bf69/${accessToken}/True',
-            onSuccess: function(msg) {
-                window.ReactNativeWebView.postMessage(msg)
-            },
-            onError: function(msg) {
-                window.ReactNativeWebView.postMessage(msg)
-                alert("Error function : " + msg);
-            }
-        });
-        }
-       catch (e){
-        window.ReactNativeWebView.postMessage(e.message)
-       }
-    }
-</script>
-
-<iframe id="dieCommFrame" name="paymetric" type="text/html" width="600" height="300"
-        src="https://cert-xiecomm.paymetric.com/diecomm/View/Iframe/a94c7413-d1f1-45e3-9427-00408707bf69/${accessToken}/True"></iframe>
-<input type="button" value="Submit Payment" onClick="submitForm(); return false;">
-</body>
-</html>        
-        `,
+        uri: `http://localhost:5000?token=${AccessToken}`,
       }}
     />
   );
