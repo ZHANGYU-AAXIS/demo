@@ -1,0 +1,22 @@
+{
+    "sourceFile": "CheckoutScreen.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1631131791807,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1631131802693,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -51,9 +51,9 @@\n }\n \n const styles = StyleSheet.create({\n   container: {\n-    padding: 16,\n+    padding: 24,\n     backgroundColor: \"white\",\n   },\n   title: {\n     fontSize: 20,\n"
+                }
+            ],
+            "date": 1631131791807,
+            "name": "Commit-0",
+            "content": "import * as React from \"react\";\nimport { StyleSheet, ScrollView, Alert } from \"react-native\";\nimport { SafeAreaView } from \"react-native-safe-area-context\";\nimport { VStack, Button, Text } from \"native-base\";\nimport { Address, CreditCard, Filler } from \"./CheckoutComponents\";\n\nexport default function CheckoutScreen({ navigation, route }) {\n  const [cards, setCards] = React.useState([]);\n\n  React.useEffect(() => {\n    const { params: creditCard } = route;\n    if (creditCard) {\n      setCards([...cards, creditCard.creditCard]);\n    }\n  }, [route.params]);\n\n  const handleAddCard = () => {\n    navigation.navigate(\"AddCard\");\n  };\n\n  return (\n    <SafeAreaView>\n      <ScrollView>\n        <VStack style={styles.container} space={2}>\n          <Filler />\n          <Text style={[styles.title]}>Select Card for Payment</Text>\n          {cards.length === 0 && (\n            <Text style={{ textAlign: \"center\" }}>\n              You have no cards on file\n            </Text>\n          )}\n          <Button variant=\"ghost\" onPress={handleAddCard}>\n            Add New Card\n          </Button>\n          {cards.length > 0 && cards.map((card) => <CreditCard {...card} />)}\n\n          <Text style={styles.title}>Select Address</Text>\n          <Address />\n          <Address />\n          <Button\n            onPress={() => {\n              Alert.alert(\"Turn Back\", \"Nothing else works\");\n            }}\n          >\n            Next\n          </Button>\n        </VStack>\n      </ScrollView>\n    </SafeAreaView>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    padding: 16,\n    backgroundColor: \"white\",\n  },\n  title: {\n    fontSize: 20,\n    fontWeight: \"bold\",\n  },\n  separator: {\n    marginVertical: 30,\n    height: 1,\n    width: \"80%\",\n  },\n  content: {\n    backgroundColor: \"#d8d8d8\",\n    width: \"100%\",\n    height: 80,\n    borderRadius: 16,\n  },\n});\n"
+        }
+    ]
+}

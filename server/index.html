@@ -1,0 +1,72 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>A Basic HTML5 Template</title>
+    <meta
+      name="description"
+      content="A simple HTML5 Template for new projects."
+    />
+    <meta name="author" content="SitePoint" />
+
+    <meta property="og:title" content="A Basic HTML5 Template" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://www.sitepoint.com/a-basic-html5-template/"
+    />
+    <meta
+      property="og:description"
+      content="A simple HTML5 Template for new projects."
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    <script>
+      function saveCard() {
+        window.location.assign(
+          "https://firebasestorage.googleapis.com/v0/b/mattdemo-b6664.appspot.com/o/submitted.html?alt=media"
+        );
+      }
+    </script>
+  </head>
+
+  <body>
+    <div style="padding: 16px">
+      <h1>Add Credit Card</h1>
+      <form
+        action="https://firebasestorage.googleapis.com/v0/b/mattdemo-b6664.appspot.com/o/submitted.html?alt=media"
+        method="GET"
+        id="cardForm"
+      >
+        <div class="vstack gap-3">
+          <input
+            placeholder="Enter Card Name"
+            name="cardName"
+            class="form-control"
+          />
+
+          <input
+            placeholder="Enter Number"
+            name="cardNumber"
+            class="form-control"
+          />
+
+          <button
+            type="button"
+            class="btn btn-primary form-control"
+            onclick="saveCard()"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
