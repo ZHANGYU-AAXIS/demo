@@ -56,7 +56,7 @@ const CheckoutAddCardScreen = ({ navigation }) => {
       style={{ flex: 1 }}
       originWhitelist={["*"]}
       source={{
-        uri: `http://localhost:5000?token=${AccessToken}&billing=${!!page}`,
+        uri: `https://zhangyu-aaxis.github.io/demo?token=${AccessToken}&billing=${!!page}`,
       }}
     />
   );
