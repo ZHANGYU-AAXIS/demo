@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"
+      name="viewport"
+    />
+    <style>
+      body {
+        margin: 0;
+      }
+      iframe {
+        border: none;
+      }
+      #submitBtn {
+        display: block;
+        padding: 0 12px;
+        background: #1c88c7;
+        color: white;
+        height: 40px;
+        border: none;
+        outline: none;
+        appearance: none;
+      }
+      .billing-field {
+        padding-left: 8px;
+        margin-bottom: 16px;
+      }
+      .billing-field label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .billing-field input {
+        height: 32px;
+        width: 220px;
+        font-size: 18px;
+        border-radius: 3px;
+        outline: none;
+        border: 1px solid #e3e3e3;
+        -webkit-appearance: none;
+      }
+      .billing-field input:focus {
+        border-color: #1c88c7;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="billingNode" style="display: none">
+      <div class="billing-field">
+        <label> Name </label>
+        <input id="name" />
+      </div>
+      <div class="billing-field">
+        <label> Company </label>
+        <input id="company" />
+      </div>
+      <div class="billing-field">
+        <label> Address </label>
+        <input id="address" />
+      </div>
+      <div class="billing-field">
+        <label> City </label>
+        <input id="city" />
+      </div>
+    </div>
+    <p id="text"></p>
+    <button type="button" id="submitBtn">Submit Payment</button>
+    <script src="https://xiecomm.paymetric.com/DIeComm/Scripts/XIFrame/XIFrame-1.2.0.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const token = params.get("token");
+      const billing = params.get("billing");
+      if (billing === "true") {
+        billingNode.style.display = "block";
+      }
+      const targetUrl = `https://cert-xiecomm.paymetric.com/diecomm/View/Iframe/a94c7413-d1f1-45e3-9427-00408707bf69/${token}/True`;
+
+      submitBtn.onclick = submitForm;
+
+      function submitForm() {
+        $XIFrame.submit({
+          iFrameId: "dieCommFrame",
+          targetUrl,
+          onSuccess: function (msg) {
+            const value = JSON.parse(msg);
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({
+                ...value,
+                name: document.getElementById("name").value,
+                company: company.value,
+                address: address.value,
+                city: city.value,
+              })
+            );
+          },
+          onError: function (msg) {
+            window.ReactNativeWebView.postMessage(msg);
+            alert("Error function : " + msg);
+          },
+        });
+      }
+
+      const iframe = document.createElement("iframe");
+      iframe.src = targetUrl;
+      iframe.name = "paymetric";
+      iframe.id = "dieCommFrame";
+      iframe.type = "text/html";
+      iframe.width = "420";
+      iframe.height = "388";
+      billingNode.insertAdjacentElement("beforebegin", iframe);
+    </script>
+  </body>
+</html>
